@@ -12,7 +12,40 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="@string/titleText"
         android:id="@+id/title_textView"
-        android:layout_centerVertical="true"
+        android:textColor="#FFFFFF"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textColor="#FFFFFF" />
+        android:layout_marginTop="72dp"
+        android:textSize="@dimen/abc_text_size_headline_material" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/onButton_text"
+        android:id="@+id/onButton"
+        android:layout_marginTop="33dp"
+        android:layout_below="@+id/title_textView"
+        android:layout_alignRight="@+id/title_textView"
+        android:layout_alignEnd="@+id/title_textView"
+        android:layout_alignLeft="@+id/title_textView"
+        android:layout_alignStart="@+id/title_textView" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/offButton_text"
+        android:id="@+id/offButton"
+        android:layout_below="@+id/onButton"
+        android:layout_alignRight="@+id/onButton"
+        android:layout_alignEnd="@+id/onButton"
+        android:layout_alignLeft="@+id/onButton"
+        android:layout_alignStart="@+id/onButton" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/connectButton_txt"
+        android:id="@+id/connectButton"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

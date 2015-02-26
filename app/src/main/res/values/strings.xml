@@ -4,4 +4,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="titleText">LED Remote</string>
+    <string name="offButton_text">LED OFF</string>
+    <string name="onButton_text">LED ON</string>
+    <string name="connectButton_txt">Connect to LED</string>
 </resources>
