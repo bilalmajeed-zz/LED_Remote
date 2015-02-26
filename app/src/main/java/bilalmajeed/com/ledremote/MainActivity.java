@@ -1,5 +1,6 @@
 package bilalmajeed.com.ledremote;
 
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.Toast;
 import android.content.Intent;
@@ -18,7 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     Button onButton;
     Button offButton;
