@@ -36,10 +36,10 @@
         android:text="@string/offButton_text"
         android:id="@+id/offButton"
         android:layout_below="@+id/onButton"
-        android:layout_alignRight="@+id/onButton"
-        android:layout_alignEnd="@+id/onButton"
-        android:layout_alignLeft="@+id/onButton"
-        android:layout_alignStart="@+id/onButton" />
+        android:layout_alignRight="@+id/title_textView"
+        android:layout_alignEnd="@+id/title_textView"
+        android:layout_alignLeft="@+id/title_textView"
+        android:layout_alignStart="@+id/title_textView" />
 
     <Button
         android:layout_width="wrap_content"
