@@ -25,14 +25,18 @@ import java.util.UUID;
 
 public class MainActivity extends Activity {
 
+    //declare the button variables
     Button onButton;
     Button offButton;
     Button connectButton;
 
+    //declare a few constant error messages
     private final String remoteDeviceName = "HC-06";
-    private final String BUTTON_PRESS_ERROR = "The phone must be connected to the device";
-    private String CONNECT_BUTTON_ERROR;
+    private final String CONNECTION_ERROR= "The phone must be connected to the device";
+    private final String PAIRING_ERROR = "Device: " + remoteDeviceName + " not paired";
+    private String CONNECT_BUTTON_ERROR = "Unidentified ERROR";
 
+    //declare the objects needed for the bluetooth
     private BluetoothAdapter btAdapter;
     private BluetoothSocket btSocket;
     private BluetoothDevice btRemoteDevice;
@@ -58,56 +62,42 @@ public class MainActivity extends Activity {
             startActivityForResult(turnBTOn, 1);
         }
 
-        buttonClickListener();
     }
 
-    private void buttonClickListener() {
+    public void connect(View view){
 
-        /* CONNECT BUTTON LISTENER */
-        connectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View connectClick) {
-                findRemoteDevice();
-                try{
-                    connectRemoteDevice();
-                }catch(Exception e){
-                    if(!btAdapter.isEnabled())
-                        CONNECT_BUTTON_ERROR = "Bluetooth is not enabled on the phone";
-                    else if(btSocket.isConnected())
-                        CONNECT_BUTTON_ERROR = "Already connected to " + remoteDeviceName;
-                    else if(!btSocket.isConnected())
-                        CONNECT_BUTTON_ERROR = "Device: " + btRemoteDevice.getName() + " not found";
-                    else
-                        CONNECT_BUTTON_ERROR = "Unidentified ERROR";
+        findRemoteDevice();
 
-                    messageBox("CONNECT Button", CONNECT_BUTTON_ERROR);
-                }
-            }
-        });
+        try {
+            connectRemoteDevice();
+        } catch (IOException e) {
+            if(!btAdapter.isEnabled())
+                CONNECT_BUTTON_ERROR = "Bluetooth is not enabled on the phone";
+            else if(btSocket.isConnected())
+                CONNECT_BUTTON_ERROR = "Already connected to " + remoteDeviceName;
+            else if(!btSocket.isConnected())
+                CONNECT_BUTTON_ERROR = "Device: " + btRemoteDevice.getName() + " not found";
+            else
+                CONNECT_BUTTON_ERROR = "Unidentified ERROR";
 
-        /* ON BUTTON LISTENER */
-        onButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View onClick) {
-                try{
-                    turnON();
-                }catch(Exception e){
-                    messageBox("ON Button", BUTTON_PRESS_ERROR);
-                }
-            }
-        });
+            messageBox("CONNECT Button", CONNECT_BUTTON_ERROR);
+        }
+    }
 
-        /* OFF BUTTON LISTENER */
-        offButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View offClick) {
-                try{
-                    turnOFF();
-                }catch(Exception e){
-                    messageBox("OFF Button", BUTTON_PRESS_ERROR);
-                }
-            }
-        });
+    public void turnON(View view){
+        try{
+            output.write("1\n".getBytes());
+        }catch(Exception e){
+            messageBox("ON Button", CONNECTION_ERROR);
+        }
+    }
+
+    public void turnOFF(View view){
+        try{
+            output.write("0\n".getBytes());
+        }catch(Exception e){
+            messageBox("OFF Button", CONNECTION_ERROR);
+        }
     }
 
     public void findRemoteDevice(){
@@ -132,18 +122,6 @@ public class MainActivity extends Activity {
         connectButton.setClickable(false);
         connectButton.setEnabled(false);
         connectButton.setText(getResources().getString(R.string.connectedText));
-    }
-
-    public void turnON() throws IOException{
-        String msg = "1";
-        msg += "\n";
-        output.write(msg.getBytes());
-    }
-
-    public void turnOFF() throws IOException{
-        String msg = "0";
-        msg += "\n";
-        output.write(msg.getBytes());
     }
 
     private void messageBox(String method, String message) {
