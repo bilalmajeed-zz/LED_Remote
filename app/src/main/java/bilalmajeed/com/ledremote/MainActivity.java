@@ -5,6 +5,9 @@ import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -52,6 +55,9 @@ public class MainActivity extends Activity {
         //initialize the btAdapter
         btAdapter = BluetoothAdapter.getDefaultAdapter();
 
+        IntentFilter btConnectedIntent = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        this.registerReceiver(broadcastReceiver, btConnectedIntent);
+
         //if there not btAdapter, meaning no Bluetooth support on the phone. Then notify user
         if(btAdapter == null){
             messageBox("DEVICE NOT SUPPORTED", "Your device does not have bluetooth capabilities");
@@ -63,6 +69,22 @@ public class MainActivity extends Activity {
             startActivityForResult(turnBTOn, 1);
         }
     }
+
+    final private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+            //if bluetooth is not connected then enable connect button
+            if(BluetoothDevice.ACTION_ACL_DISCONNECTED == action){
+                connectButton.setClickable(true);
+                connectButton.setEnabled(true);
+                connectButton.setText(getResources().getString(R.string.default_connectButton_txt));
+            }
+        }
+    };
+
     //IF CONNECT BUTTON CLICKED
     public void connect(View view){
         //find the paired device
@@ -135,17 +157,6 @@ public class MainActivity extends Activity {
         connectButton.setText(getResources().getString(R.string.connectedText));
     }
 
-    //disables a message box to the user with the inputed message with one button
-    private void messageBox(String method, String message) {
-        Log.d("EXCEPTION: " + method, message);
-
-        AlertDialog.Builder messageBox = new AlertDialog.Builder(this);
-        messageBox.setTitle(method);
-        messageBox.setMessage(message);
-        messageBox.setCancelable(false);
-        messageBox.setNeutralButton("OK", null);
-        messageBox.show();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -167,5 +178,17 @@ public class MainActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    //disables a message box to the user with the inputed message with one button
+    private void messageBox(String method, String message) {
+        Log.d("EXCEPTION: " + method, message);
+
+        AlertDialog.Builder messageBox = new AlertDialog.Builder(this);
+        messageBox.setTitle(method);
+        messageBox.setMessage(message);
+        messageBox.setCancelable(false);
+        messageBox.setNeutralButton("OK", null);
+        messageBox.show();
     }
 }

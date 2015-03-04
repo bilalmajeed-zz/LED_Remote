@@ -5,7 +5,7 @@
     <string name="titleText">Controls</string>
     <string name="offButton_text">LED OFF</string>
     <string name="onButton_text">LED ON</string>
-    <string name="connectButton_txt">Connect to LED</string>
+    <string name="default_connectButton_txt">Connect to LED</string>
 
     <string name="connectedText">Connected</string>
 </resources>
