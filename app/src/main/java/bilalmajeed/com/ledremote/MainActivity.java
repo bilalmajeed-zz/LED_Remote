@@ -174,6 +174,7 @@ public class MainActivity extends Activity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            Toast.makeText(this, "Setting tapped", Toast.LENGTH_LONG).show();
             return true;
         }
 
