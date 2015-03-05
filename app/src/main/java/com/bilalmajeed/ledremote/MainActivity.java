@@ -25,9 +25,6 @@ import java.util.UUID;
 
 public class MainActivity extends Activity {
 
-    //declare the button variables
-    Button onButton;
-    Button offButton;
     Button connectButton;
 
     //declare a few constant error messages
@@ -45,9 +42,6 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //initialize the buttons
-        onButton = (Button) findViewById(R.id.onButton);
-        offButton = (Button) findViewById(R.id.offButton);
         connectButton = (Button) findViewById(R.id.connectButton);
 
         //initialize the btAdapter
@@ -139,6 +133,18 @@ public class MainActivity extends Activity {
         output = btSocket.getOutputStream();
     }
 
+    //displays a message box to the user with the inputed message with one button
+    private void messageBox(String method, String message) {
+        Log.d("EXCEPTION: " + method, message);
+
+        AlertDialog.Builder messageBox = new AlertDialog.Builder(this);
+        messageBox.setTitle(method);
+        messageBox.setMessage(message);
+        messageBox.setCancelable(false);
+        messageBox.setNeutralButton("OK", null);
+        messageBox.show();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -162,15 +168,13 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    //displays a message box to the user with the inputed message with one button
-    private void messageBox(String method, String message) {
-        Log.d("EXCEPTION: " + method, message);
-
-        AlertDialog.Builder messageBox = new AlertDialog.Builder(this);
-        messageBox.setTitle(method);
-        messageBox.setMessage(message);
-        messageBox.setCancelable(false);
-        messageBox.setNeutralButton("OK", null);
-        messageBox.show();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try{
+            btSocket.close();
+        }catch(IOException e){
+            Toast.makeText(this, "ERROR - Could not close socket", Toast.LENGTH_LONG).show();
+        }
     }
 }
