@@ -2,5 +2,5 @@
 <resources>
     <color name="actionBar_color">#03a9f4</color> //light blue 500
     <color name="statusBar_color">#0288D1</color> //light blue 700
-    <color name="connectedButton_bg">#388E3C</color> //green 700
+    <color name="connected_bg">#388E3C</color> //green 700
 </resources>

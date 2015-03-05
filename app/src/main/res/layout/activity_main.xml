@@ -54,6 +54,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:enabled="true"
-        android:onClick="connect"/>
+        android:onClick="connect" />
 
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package bilalmajeed.com.ledremote;
+package com.bilalmajeed.ledremote;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,9 +32,7 @@ public class MainActivity extends Activity {
 
     //declare a few constant error messages
     private final String deviceName = "HC-06";
-    private final String CONNECTION_ERROR= "The phone must be connected to the device";
-    private final String PAIRING_ERROR = "Device: " + deviceName + " not paired";
-    private String CONNECT_BUTTON_ERROR = "Unidentified ERROR";
+    private final String CONNECTION_ERROR = "Not connected to device";
 
     //declare the objects needed for the bluetooth
     private BluetoothAdapter btAdapter;
@@ -55,8 +53,10 @@ public class MainActivity extends Activity {
         //initialize the btAdapter
         btAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        IntentFilter btConnectedIntent = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        this.registerReceiver(broadcastReceiver, btConnectedIntent);
+        IntentFilter btDisconnected = new IntentFilter(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        IntentFilter btConnected = new IntentFilter(BluetoothDevice.ACTION_ACL_CONNECTED);
+        this.registerReceiver(bt_broadcastReceiver, btDisconnected);
+        this.registerReceiver(bt_broadcastReceiver, btConnected);
 
         //if there not btAdapter, meaning no Bluetooth support on the phone. Then notify user
         if(btAdapter == null){
@@ -70,43 +70,35 @@ public class MainActivity extends Activity {
         }
     }
 
-    final private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+    final private BroadcastReceiver bt_broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
             //if bluetooth is not connected then enable connect button
             if(BluetoothDevice.ACTION_ACL_DISCONNECTED == action){
                 connectButton.setClickable(true);
                 connectButton.setEnabled(true);
                 connectButton.setText(getResources().getString(R.string.default_connectButton_txt));
+            }else if(BluetoothDevice.ACTION_ACL_CONNECTED == action){
+                connectButton.setClickable(false);
+                connectButton.setEnabled(false);
+                connectButton.setText(getResources().getString(R.string.connectedText));
             }
         }
     };
 
     //IF CONNECT BUTTON CLICKED
     public void connect(View view){
-        //find the paired device
+
         findRemoteDevice();
 
         try {
-            //connect to the remote device
             connectRemoteDevice();
-        } catch (IOException e) {
-            //handle any error
-            if(!btAdapter.isEnabled())
-                CONNECT_BUTTON_ERROR = "Bluetooth is not enabled on the phone";
-            else if(btSocket.isConnected())
-                CONNECT_BUTTON_ERROR = "Already connected to " + deviceName;
-            else if(!btSocket.isConnected())
-                CONNECT_BUTTON_ERROR = "Device: " + btRemoteDevice.getName() + " not found";
-            else
-                CONNECT_BUTTON_ERROR = "Unidentified ERROR";
-
-            //show a message to the user with the error
-            messageBox("CONNECT Button", CONNECT_BUTTON_ERROR);
+        } catch (Exception e) {
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         }
+
     }
 
     //IF ON BUTTON CLICKED
@@ -114,7 +106,7 @@ public class MainActivity extends Activity {
         try{
             output.write("1\n".getBytes());
         }catch(Exception e){
-            messageBox("ON Button", CONNECTION_ERROR);
+            Toast.makeText(this, CONNECTION_ERROR, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -123,7 +115,7 @@ public class MainActivity extends Activity {
         try{
             output.write("0\n".getBytes());
         }catch(Exception e){
-            messageBox("OFF Button", CONNECTION_ERROR);
+            Toast.makeText(this, CONNECTION_ERROR, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -141,22 +133,11 @@ public class MainActivity extends Activity {
     }
 
     public void connectRemoteDevice() throws IOException{
-        //set uuid
         UUID btUUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
-
-        //create a rfcomm socket and connect tot device
         btSocket = btRemoteDevice.createRfcommSocketToServiceRecord(btUUID);
         btSocket.connect();
         output = btSocket.getOutputStream();
-
-        Toast.makeText(this, "Connected", Toast.LENGTH_LONG).show();
-
-        //disable the connect button, so you can not click to it once connected
-        connectButton.setClickable(false);
-        connectButton.setEnabled(false);
-        connectButton.setText(getResources().getString(R.string.connectedText));
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -181,7 +162,7 @@ public class MainActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    //disables a message box to the user with the inputed message with one button
+    //displays a message box to the user with the inputed message with one button
     private void messageBox(String method, String message) {
         Log.d("EXCEPTION: " + method, message);
 

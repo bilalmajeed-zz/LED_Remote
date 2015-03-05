@@ -1,4 +1,4 @@
-package bilalmajeed.com.ledremote;
+package com.bilalmajeed.ledremote;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
