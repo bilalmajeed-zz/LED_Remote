@@ -1,5 +1,5 @@
-# LED Remote
-A bluetooth connection used to controll an LED on a Arduino board
+# Smart Switch
+A bluetooth connection used to controll an realy connected to an Arduino board
 
 ---
 
